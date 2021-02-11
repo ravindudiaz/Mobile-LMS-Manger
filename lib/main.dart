@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import './Domains/Student.dart';
 
 void main() {
   runApp(PlatformApp());
@@ -42,7 +43,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   bool deleteStudentSelected = false;
   bool updateStudentSelected = false;
 
-  var receivedStudentData;
+  List<dynamic> receivedStudentData;
 
   //Regarding Teachers
   bool getAllTeacherDataDone = false;
@@ -169,6 +170,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                 body: this.addStudentSelected
                     ? Scaffold(
                         body: Container(
+                          width: double.infinity,
                           color: Colors.blue[50],
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -183,46 +185,50 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   child: Text('Get All Students'),
                                 ),
                               ),
-                              Center(
-                                child: Container(
-                                  // color: Colors.yellow[100],
-                                  width: screenWidth * 0.9,
-                                  child: this.getAllStudentDataDone
-                                      ? Card(
-                                          color: Colors.white,
-                                          elevation: 4.0,
-                                          child: ListTile(
-                                            subtitle: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Student ID : " +
-                                                    receivedStudentData[0]
-                                                            ["uid"]
-                                                        .toString()),
-                                                Text("Email : " +
-                                                    receivedStudentData[0]
-                                                        ["email"]),
-                                              ],
-                                            ),
-                                            // isThreeLine: true,
-                                            leading: FlutterLogo(
-                                              size: 40.0,
-                                              curve: Curves.easeIn,
-                                              duration:
-                                                  Duration(milliseconds: 500),
-                                            ),
-                                            title: Text(
-                                              this.receivedStudentData[0]
-                                                  ["name"],
+                              this.getAllStudentDataDone
+                                  ? ListView.builder(
+                                      itemCount: receivedStudentData.length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, index) {
+                                        var student =
+                                            receivedStudentData[index];
+                                        return Container(
+                                          // color: Colors.yellow[100],
+                                          // width: screenWidth * 0.9,
+                                          child: Card(
+                                            color: Colors.white,
+                                            elevation: 4.0,
+                                            child: ListTile(
+                                              title: Text(
+                                                student["name"],
+                                              ),
+                                              subtitle: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("Student ID : " +
+                                                      student["uid"]
+                                                          .toString()),
+                                                  Text("Email : " +
+                                                      student["email"]),
+                                                ],
+                                              ),
+                                              // isThreeLine: true,
+                                              leading: FlutterLogo(
+                                                size: 40.0,
+                                                curve: Curves.easeIn,
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                              ),
                                             ),
                                           ),
-                                        )
-                                      : Text(''),
-                                ),
-                              )
+                                        );
+                                      },
+                                    )
+                                  : Text(''),
                             ],
                           ),
                         ),
@@ -349,7 +355,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
     print(response.statusCode);
     if (response.statusCode == 200) {
       setState(() {
-        this.receivedCourseData = jsonDecode(response.body);
         this.getAllCourseDataDone = true;
         print(receivedCourseData);
       });
