@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './Domains/Student.dart';
+import 'dart:async';
 
 void main() {
   runApp(PlatformApp());
@@ -55,6 +56,9 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
 
   var receivedTeacherData;
 
+  var sHeight;
+  var sWidth;
+
   //Regarding Courses
   bool getAllCourseDataDone = false;
 
@@ -70,7 +74,9 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   Widget build(BuildContext context) {
     final mediaData = MediaQuery.of(context);
     final screenWidth = mediaData.size.width;
+    this.sWidth = screenWidth;
     final screenHeight = mediaData.size.height;
+    this.sHeight = screenHeight;
     return Scaffold(
       body: DefaultTabController(
         length: 3,
@@ -253,7 +259,18 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   } else if (snapshot.hasError) {
                                     return Text("${snapshot.error}");
                                   }
-                                  return CircularProgressIndicator();
+                                  return Container(
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.person_pin,
+                                        color: Colors.blue[100],
+                                        size: 120,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
@@ -320,6 +337,20 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
         ),
       ),
     );
+  }
+
+//Loader display
+  Widget displayProgressIndicator() {
+    Timer.run(() {
+      return Container(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.blue[200],
+        ),
+        width: this.sWidth,
+        height: sWidth * 0.65,
+        alignment: Alignment.center,
+      );
+    });
   }
 
   //http call funtions
