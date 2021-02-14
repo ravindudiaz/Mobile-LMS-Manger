@@ -36,7 +36,7 @@ class StudentPlatformApp extends StatefulWidget {
 
 class StudentPlatformAppState extends State<StudentPlatformApp> {
   //Regarding Students
-  bool getAllStudentDataDone = false;
+  Future<http.Response> allStudentsResponse;
 
   bool addStudentSelected = false;
   bool getStudentSelected = false;
@@ -169,69 +169,97 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                 ),
                 body: this.addStudentSelected
                     ? Scaffold(
-                        body: Container(
-                          width: double.infinity,
-                          color: Colors.blue[50],
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: screenWidth * 0.5,
-                                child: RaisedButton(
-                                  color: Colors.blue[200],
-                                  elevation: 5.0,
-                                  onPressed: this.getAllStudents,
+                        body: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: screenWidth,
+                              alignment: Alignment.center,
+                              color: Colors.yellow[50],
+                              child: RaisedButton(
+                                // shape: RoundedRectangleBorder(
+                                //   borderRadius: BorderRadius.circular(18.0),
+                                //   side: BorderSide(
+                                //     color: Colors.blue[900],
+                                //   ),
+                                // ),
+                                shape: StadiumBorder(),
+
+                                color: Colors.blue[200],
+                                elevation: 5.0,
+                                onPressed: () {
+                                  setState(() {
+                                    this.allStudentsResponse =
+                                        this.getAllStudents();
+                                  });
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
                                   child: Text('Get All Students'),
+                                  width: screenWidth * 0.4,
                                 ),
                               ),
-                              this.getAllStudentDataDone
-                                  ? ListView.builder(
-                                      itemCount: receivedStudentData.length,
-                                      shrinkWrap: true,
+                            ),
+                            Container(
+                              height: screenHeight * 0.7,
+                              child: FutureBuilder<http.Response>(
+                                future: allStudentsResponse,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    var studentData =
+                                        jsonDecode(snapshot.data.body);
+                                    print(snapshot.data);
+
+                                    return ListView.builder(
+                                      // color: Colors.yellow[100],
+                                      // width: screenWidth * 0.9,
+                                      // shrinkWrap: true,
+                                      itemCount: studentData.length,
                                       itemBuilder:
                                           (BuildContext context, index) {
-                                        var student =
-                                            receivedStudentData[index];
-                                        return Container(
-                                          // color: Colors.yellow[100],
-                                          // width: screenWidth * 0.9,
-                                          child: Card(
-                                            color: Colors.white,
-                                            elevation: 4.0,
-                                            child: ListTile(
-                                              title: Text(
-                                                student["name"],
-                                              ),
-                                              subtitle: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Student ID : " +
-                                                      student["uid"]
-                                                          .toString()),
-                                                  Text("Email : " +
-                                                      student["email"]),
-                                                ],
-                                              ),
-                                              // isThreeLine: true,
-                                              leading: FlutterLogo(
-                                                size: 40.0,
-                                                curve: Curves.easeIn,
-                                                duration:
-                                                    Duration(milliseconds: 500),
-                                              ),
+                                        return Card(
+                                          color: Colors.white,
+                                          elevation: 4.0,
+                                          child: ListTile(
+                                            title: Text(
+                                              studentData[index]["name"],
+                                            ),
+                                            subtitle: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Student ID : " +
+                                                    studentData[index]["uid"]
+                                                        .toString()),
+                                                Text("Email : " +
+                                                    studentData[index]
+                                                        ["email"]),
+                                              ],
+                                            ),
+                                            // isThreeLine: true,
+                                            leading: FlutterLogo(
+                                              size: 40.0,
+                                              curve: Curves.easeIn,
+                                              duration:
+                                                  Duration(milliseconds: 500),
                                             ),
                                           ),
                                         );
                                       },
-                                    )
-                                  : Text(''),
-                            ],
-                          ),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text("${snapshot.error}");
+                                  }
+                                  return CircularProgressIndicator();
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+                        // ),
                       )
                     : Scaffold(
                         body: Container(
@@ -298,25 +326,20 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
 
   //Students
   //Get all students
-  void getAllStudents() async {
-    // var uri = "https://192.168.8.130:8080/students/getstudentnames";
+  Future<http.Response> getAllStudents() async {
+    // var uri = "https://192.168.8.130:8080/students/getallstudents";
     var uri = "http://10.0.2.2:8080/students/getallstudents";
 
-    http.Response response = await http.get(
+    var response = await http.get(
       uri,
       headers: {
         "Accept": "application/json",
       },
     );
     print(response.statusCode);
-
     if (response.statusCode == 200) {
-      setState(() {
-        this.receivedStudentData = jsonDecode(response.body);
-        this.getAllStudentDataDone = true;
-      });
-
-      print(this.receivedStudentData);
+      print(response);
+      return response;
     } else {
       throw Exception('Failed to load the students');
     }
@@ -324,19 +347,16 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
 
   //Teachers
   //Get all teachers
-  void getAllTeachers() async {
+  Future<http.Response> getAllTeachers() async {
     var uri = "http://localhost/teachers/getallteachers";
 
-    http.Response response = await http.get(uri, headers: {
+    var response = await http.get(uri, headers: {
       "Accept": "application/json",
     });
     print(response.statusCode);
     if (response.statusCode == 200) {
-      this.setState(() {
-        this.receivedTeacherData = jsonDecode(response.body);
-        this.getAllTeacherDataDone = true;
-        print(receivedTeacherData);
-      });
+      print(response);
+      return response;
     } else {
       throw Exception('Failed to load the teachers');
     }
