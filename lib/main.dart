@@ -37,6 +37,8 @@ class StudentPlatformApp extends StatefulWidget {
 }
 
 class StudentPlatformAppState extends State<StudentPlatformApp> {
+  String baseUri = "http://10.0.2.2:8080/";
+
   //Regarding Students
   Future<http.Response> allStudentsResponse;
 
@@ -44,8 +46,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   bool getStudentSelected = false;
   bool deleteStudentSelected = false;
   bool updateStudentSelected = false;
-
-  List<dynamic> receivedStudentData;
 
   //Regarding Teachers
   bool getAllTeacherDataDone = false;
@@ -540,7 +540,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   //Get all students
   Future<http.Response> getAllStudents() async {
     // var uri = "https://192.168.8.130:8080/students/getallstudents";
-    var uri = "http://10.0.2.2:8080/students/getallstudents";
+    var uri = baseUri + "students/getallstudents";
 
     var response = await http.get(
       uri,
@@ -554,6 +554,26 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
       return response;
     } else {
       throw Exception('Failed to load the students');
+    }
+  }
+
+  //Create Student
+  Future<http.Response> createStudent(String name, String email) async {
+    var uri = baseUri + "students/addstudent";
+
+    var response = await http.post(
+      uri,
+      body: {"name": name, "email": email},
+      headers: {
+        "Accept": "application/json",
+      },
+    );
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print(response);
+      return response;
+    } else {
+      throw Exception('Failed to create student');
     }
   }
 
