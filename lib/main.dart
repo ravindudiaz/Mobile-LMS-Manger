@@ -191,18 +191,15 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           children: [
                             Container(
                               width: screenWidth,
+                              padding: EdgeInsets.only(
+                                  top: 0.01 * screenHeight,
+                                  bottom: 0.01 * screenHeight),
+                              height: screenHeight * 0.1,
                               alignment: Alignment.center,
-                              color: Colors.yellow[50],
+                              color: Colors.blue[50],
                               child: RaisedButton(
-                                // shape: RoundedRectangleBorder(
-                                //   borderRadius: BorderRadius.circular(18.0),
-                                //   side: BorderSide(
-                                //     color: Colors.blue[900],
-                                //   ),
-                                // ),
                                 shape: StadiumBorder(),
-
-                                color: Colors.blue[200],
+                                color: Colors.blue[900],
                                 elevation: 5.0,
                                 onPressed: () {
                                   setState(() {
@@ -212,7 +209,11 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
-                                  child: Text('Get All Students'),
+                                  child: Text(
+                                    'Get All Students',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15),
+                                  ),
                                   width: screenWidth * 0.4,
                                 ),
                               ),
@@ -423,19 +424,31 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                       Container(
                                         alignment: Alignment.center,
                                         width: screenWidth,
+                                        margin: EdgeInsets.only(
+                                          top: 0.05 * screenHeight,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue[50],
+                                        ),
                                         child: RaisedButton(
                                           color: Colors.blue[800],
+                                          shape: StadiumBorder(),
+                                          elevation: 4.0,
+                                          focusElevation: 5.0,
                                           onPressed: () {
-                                            AlertDialog(
-                                                content: Text(
-                                                    'Submit button pressed!'));
+                                            print("Submit button pressed...");
                                           },
                                           child: Container(
-                                            width: screenWidth * 0.4,
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue[800],
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        40.0)),
+                                            width: screenWidth * 0.6,
                                             height: screenHeight * 0.1,
                                             alignment: Alignment.center,
                                             child: Text(
-                                              'Submit',
+                                              'Create Student',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 20,
