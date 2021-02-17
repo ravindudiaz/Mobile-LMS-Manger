@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './Domains/Student.dart';
@@ -70,6 +70,13 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
 
   var receivedCourseData;
 
+  Color defaultDrawerItemColor = Colors.blue[100];
+  Color selectedDraweItemColor = Colors.blue[300];
+
+  Color changeDrawerItemColor(bool selected) {
+    return selected ? selectedDraweItemColor : defaultDrawerItemColor;
+  }
+
 //build function
   @override
   Widget build(BuildContext context) {
@@ -114,16 +121,19 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           child: Container(
                             child: Text(
                               'Student Operations',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
                         Card(
-                          color: Colors.blue[100],
+                          color: changeDrawerItemColor(getStudentSelected),
                           child: ListTileTheme(
-                            selectedTileColor: Colors.blue[300],
+                            // selectedTileColor: this.drawerItemColor,
                             child: ListTile(
+                              enabled: true,
                               leading: Icon(Icons.person_pin),
                               title: Text('Get Student'),
                               onTap: () {
@@ -138,10 +148,11 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           ),
                         ),
                         Card(
-                          color: Colors.blue[100],
+                          color: changeDrawerItemColor(addStudentSelected),
                           child: ListTileTheme(
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
+                              enabled: true,
                               leading: Icon(Icons.person_add_rounded),
                               title: Text('Add Student'),
                               onTap: () {
@@ -156,26 +167,38 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           ),
                         ),
                         Card(
-                          color: Colors.blue[100],
+                          color: changeDrawerItemColor(updateStudentSelected),
                           child: ListTileTheme(
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
                               leading: Icon(Icons.update_rounded),
                               title: Text('Update Student'),
-                              hoverColor: Colors.blue[100],
-                              // selectedTileColor: Colors.blue[300],
+                              onTap: () {
+                                this.setState(() {
+                                  this.addStudentSelected = false;
+                                  this.getStudentSelected = false;
+                                  this.updateStudentSelected = true;
+                                  this.deleteStudentSelected = false;
+                                });
+                              },
                             ),
                           ),
                         ),
                         Card(
-                          color: Colors.blue[100],
+                          color: changeDrawerItemColor(deleteStudentSelected),
                           child: ListTileTheme(
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
                               leading: Icon(Icons.person_remove_rounded),
                               title: Text('Delete Student'),
-                              hoverColor: Colors.blue[100],
-                              // selectedTileColor: Colors.blue[300],
+                              onTap: () {
+                                this.setState(() {
+                                  this.addStudentSelected = false;
+                                  this.getStudentSelected = false;
+                                  this.updateStudentSelected = false;
+                                  this.deleteStudentSelected = true;
+                                });
+                              },
                             ),
                           ),
                         )
@@ -463,7 +486,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                               ],
                             ),
                           )
-                        : Text('Haha')),
+                        : Text('To be implemented')),
                 // : Scaffold(
                 //     body: Container(
                 //       width: double.infinity,
