@@ -572,21 +572,20 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                                   validator: (value) {
                                                     if (value.isEmpty) {
                                                       return 'User ID cannot be empty';
-                                                    } else if (value
-                                                        .isNotEmpty) {
-                                                      try {
-                                                        var valNum =
-                                                            int.parse(value);
-                                                      } catch (e) {
-                                                        return 'Student ID should be a number';
-                                                      }
                                                     } else {
+                                                      if (value.isNotEmpty) {
+                                                        try {
+                                                          var valNum =
+                                                              int.parse(value);
+                                                        } catch (e) {
+                                                          return 'Student ID should be a number';
+                                                        }
+                                                      }
                                                       setState(() {
                                                         stuDetailsToUpdate = {
                                                           "uid": value
                                                         };
                                                       });
-                                                      return null;
                                                     }
                                                   },
                                                 ),
