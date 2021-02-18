@@ -41,6 +41,8 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
 
   //Regarding Students
   Future<http.Response> allStudentsResponse;
+  Map<String, dynamic> stuDetailsToAdd = {};
+  Future<http.Response> createStudentResponse;
 
   bool addStudentSelected = false;
   bool getStudentSelected = false;
@@ -77,6 +79,9 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
     return selected ? selectedDraweItemColor : defaultDrawerItemColor;
   }
 
+  //Add Student Form
+  final _addStudentFormKey = GlobalKey<FormState>();
+
 //build function
   @override
   Widget build(BuildContext context) {
@@ -90,7 +95,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Student Platform'),
+            title: Text('Mobile LMS Manager'),
             bottom: TabBar(
               tabs: [
                 Tab(
@@ -143,6 +148,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   this.updateStudentSelected = false;
                                   this.deleteStudentSelected = false;
                                 });
+                                Navigator.pop(context);
                               },
                             ),
                           ),
@@ -162,6 +168,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   this.updateStudentSelected = false;
                                   this.deleteStudentSelected = false;
                                 });
+                                Navigator.pop(context);
                               },
                             ),
                           ),
@@ -180,6 +187,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   this.updateStudentSelected = true;
                                   this.deleteStudentSelected = false;
                                 });
+                                Navigator.pop(context);
                               },
                             ),
                           ),
@@ -198,6 +206,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   this.updateStudentSelected = false;
                                   this.deleteStudentSelected = true;
                                 });
+                                Navigator.pop(context);
                               },
                             ),
                           ),
@@ -314,6 +323,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                       )
                     : (this.addStudentSelected
                         ? Scaffold(
+                            resizeToAvoidBottomPadding: false,
                             body: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -335,153 +345,196 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                 ),
                                 Container(
                                   child: Form(
+                                      key: _addStudentFormKey,
                                       child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: screenWidth * 0.9,
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            // alignLabelWithHint: true,
-                                            hintText: ' Student User ID',
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[900],
-                                                  width: 2.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[400],
-                                                  width: 2.0),
-                                            ),
-                                          ),
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'User ID cannot be empty';
-                                            }
-                                            //  else {
-                                            //   try {
-                                            //     var valNum = int.parse(value);
-                                            //   } catch (Exception) {}
-                                            // }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      Container(
-                                        width: screenWidth * 0.9,
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            // alignLabelWithHint: true,
-                                            hintText: ' Student Name',
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[900],
-                                                  width: 2.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[400],
-                                                  width: 2.0),
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            width: screenWidth * 0.9,
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                // alignLabelWithHint: true,
+                                                hintText: ' Student User ID',
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[900],
+                                                      width: 2.0),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[400],
+                                                      width: 2.0),
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                // if (value.isEmpty) {
+                                                //   return 'User ID cannot be empty';
+                                                // }
+                                                //  else {
+                                                //   try {
+                                                //     var valNum = int.parse(value);
+                                                //   } catch (Exception) {}
+                                                // }
+
+                                                return null;
+                                              },
                                             ),
                                           ),
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Student Name cannot be empty';
-                                            }
-                                            //  else {
-                                            //   try {
-                                            //     var valNum = int.parse(value);
-                                            //   } catch (Exception) {}
-                                            // }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      Container(
-                                        width: screenWidth * 0.9,
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            // alignLabelWithHint: true,
-                                            hintText: ' Student Email Address',
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[900],
-                                                  width: 2.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(40.0),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue[400],
-                                                  width: 2.0),
+                                          Container(
+                                            width: screenWidth * 0.9,
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                // alignLabelWithHint: true,
+                                                hintText: ' Student Name',
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[900],
+                                                      width: 2.0),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[400],
+                                                      width: 2.0),
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Student Name cannot be empty';
+                                                } else {
+                                                  setState(() {
+                                                    stuDetailsToAdd = {
+                                                      "name": value.toString()
+                                                    };
+                                                  });
+                                                }
+                                                //  else {
+                                                //   try {
+                                                //     var valNum = int.parse(value);
+                                                //   } catch (Exception) {}
+                                                // }
+                                                return null;
+                                              },
                                             ),
                                           ),
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Enter an email address';
-                                            }
-                                            //  else {
-                                            //   try {
-                                            //     var valNum = int.parse(value);
-                                            //   } catch (Exception) {}
-                                            // }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: screenWidth,
-                                        margin: EdgeInsets.only(
-                                          top: 0.05 * screenHeight,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue[50],
-                                        ),
-                                        child: RaisedButton(
-                                          color: Colors.blue[800],
-                                          shape: StadiumBorder(),
-                                          elevation: 4.0,
-                                          focusElevation: 5.0,
-                                          onPressed: () {
-                                            print("Submit button pressed...");
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.blue[800],
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        40.0)),
-                                            width: screenWidth * 0.6,
-                                            height: screenHeight * 0.1,
+                                          Container(
+                                            width: screenWidth * 0.9,
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                // alignLabelWithHint: true,
+                                                hintText:
+                                                    ' Student Email Address',
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[900],
+                                                      width: 2.0),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40.0),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue[400],
+                                                      width: 2.0),
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Enter an email address';
+                                                } else {
+                                                  this.setState(() {
+                                                    stuDetailsToAdd.addAll(
+                                                        {"email": value});
+                                                  });
+
+                                                  print(stuDetailsToAdd);
+                                                }
+                                                //  else {
+                                                //   try {
+                                                //     var valNum = int.parse(value);
+                                                //   } catch (Exception) {}
+                                                // }R
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Container(
                                             alignment: Alignment.center,
-                                            child: Text(
-                                              'Create Student',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
+                                            width: screenWidth,
+                                            margin: EdgeInsets.only(
+                                              top: 0.05 * screenHeight,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue[50],
+                                            ),
+                                            child: RaisedButton(
+                                              color: Colors.blue[800],
+                                              shape: StadiumBorder(),
+                                              elevation: 4.0,
+                                              focusElevation: 5.0,
+                                              onPressed: () {
+                                                print(
+                                                    "Submit button pressed...");
+                                                if (_addStudentFormKey
+                                                    .currentState
+                                                    .validate()) {
+                                                  print(_addStudentFormKey
+                                                      .currentState);
+
+                                                  setState(() {
+                                                    createStudentResponse =
+                                                        createStudent(
+                                                      stuDetailsToAdd["email"],
+                                                      stuDetailsToAdd["name"],
+                                                    );
+                                                  });
+                                                }
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.blue[800],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40.0)),
+                                                width: screenWidth * 0.6,
+                                                height: screenHeight * 0.1,
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  'Create Student',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )),
+                                          )
+                                        ],
+                                      )),
                                 )
                               ],
                             ),
@@ -594,16 +647,22 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   }
 
   //Create Student
-  Future<http.Response> createStudent(String name, String email) async {
+  Future<http.Response> createStudent(var email, var name) async {
     var uri = baseUri + "students/addstudent";
 
     var response = await http.post(
       uri,
-      body: {"name": name, "email": email},
+      body: jsonEncode(
+        <String, dynamic>{
+          "email": email,
+          "name": name,
+        },
+      ),
       headers: {
-        "Accept": "application/json",
+        "Content-Type": 'application/json ; charset=UTF-8',
       },
     );
+    print("Ok?");
     print(response.statusCode);
     if (response.statusCode == 200) {
       print(response);
