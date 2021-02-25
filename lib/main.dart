@@ -148,7 +148,10 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                             // selectedTileColor: this.drawerItemColor,
                             child: ListTile(
                               enabled: true,
-                              leading: Icon(Icons.person_pin),
+                              leading: Icon(
+                                Icons.person_pin,
+                                color: Colors.green,
+                              ),
                               title: Text('Get Student'),
                               onTap: () {
                                 setState(() {
@@ -168,7 +171,10 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
                               enabled: true,
-                              leading: Icon(Icons.person_add_rounded),
+                              leading: Icon(
+                                Icons.person_add_rounded,
+                                color: Colors.yellow[800],
+                              ),
                               title: Text('Add Student'),
                               onTap: () {
                                 this.setState(() {
@@ -187,7 +193,10 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           child: ListTileTheme(
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
-                              leading: Icon(Icons.update_rounded),
+                              leading: Icon(
+                                Icons.update_rounded,
+                                color: Colors.blue[800],
+                              ),
                               title: Text('Update Student'),
                               onTap: () {
                                 this.setState(() {
@@ -206,7 +215,10 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                           child: ListTileTheme(
                             selectedTileColor: Colors.blue[300],
                             child: ListTile(
-                              leading: Icon(Icons.person_remove_rounded),
+                              leading: Icon(
+                                Icons.person_remove_rounded,
+                                color: Colors.red,
+                              ),
                               title: Text('Delete Student'),
                               onTap: () {
                                 this.setState(() {
@@ -750,7 +762,41 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                   ],
                                 ),
                               )
-                            : Text('To be implemented'))),
+                            : Scaffold(
+                                body: Container(
+                                  height: double.infinity,
+                                  color: Colors.blue[50],
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            top: screenWidth * 0.1),
+                                        width: screenWidth * 0.8,
+                                        height: screenHeight * 0.2,
+                                        child: Text(
+                                          'Welcome Admin!',
+                                          style: TextStyle(
+                                              color: Colors.blue[900],
+                                              fontSize: 24),
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                      Container(
+                                        width: screenWidth * 0.8,
+                                        padding: EdgeInsets.only(
+                                          top: screenHeight * 0.05,
+                                        ),
+                                        child: Icon(
+                                          Icons.admin_panel_settings,
+                                          color: Colors.green,
+                                          size: 150.0,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ))),
                 // : Scaffold(
                 //     body: Container(
                 //       width: double.infinity,
@@ -839,8 +885,8 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   //Students
   //Get all students
   Future<http.Response> getAllStudents() async {
-    // var uri = "https://192.168.8.130:8080/students/getallstudents";
-    var uri = baseUri + "students/getallstudents";
+    var uri = "http://192.168.8.130:8080/students/getallstudents";
+    // var uri = baseUri + "students/getallstudents";
 
     var response = await http.get(
       uri,
