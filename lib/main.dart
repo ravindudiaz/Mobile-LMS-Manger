@@ -133,8 +133,9 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                             color: Colors.blue[800],
                           ),
                           child: Container(
+                            alignment: Alignment.center,
                             child: Text(
-                              'Student Operations',
+                              'Student Ops',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
