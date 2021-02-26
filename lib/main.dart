@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:StudentPlatformApp/DefaultScreen.dart';
+import 'package:StudentPlatformApp/StudentOps/DeleteStudentView.dart';
 import 'package:StudentPlatformApp/StudentOps/GetStudentView.dart';
 import 'package:StudentPlatformApp/StudentOps/UpdateStudentForm.dart';
 import 'package:StudentPlatformApp/StudentOps/AddStudentForm.dart';
@@ -234,7 +235,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                             ? UpdateStudentForm(
                                 screenWidth, screenHeight, baseUri)
                             : (this.deleteStudentSelected
-                                ? AddStudentForm(
+                                ? DeleteStudentView(
                                     screenWidth, screenHeight, baseUri)
                                 : DefaultScreen(screenWidth, screenHeight)))),
               ),
