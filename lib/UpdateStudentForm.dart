@@ -1,51 +1,47 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-void main() {}
-
-class AddStudentForm extends StatefulWidget {
-  //constructor
-  AddStudentForm(this.screenWidth, this.screenHeight, this.baseUri);
+class UpdateStudentForm extends StatefulWidget {
+//constructor
+  UpdateStudentForm(this.screenWidth, this.screenHeight, this.baseUri);
 
   var screenWidth;
   var screenHeight;
   String baseUri;
 
   @override
-  AddStudentFormState createState() {
-    return AddStudentFormState(screenWidth, screenHeight, baseUri);
+  UpdateStudentFormState createState() {
+    return UpdateStudentFormState(screenWidth, screenHeight, baseUri);
   }
 }
 
-class AddStudentFormState extends State<AddStudentForm> {
+class UpdateStudentFormState extends State<UpdateStudentForm> {
   //constructor
-  AddStudentFormState(this.screenWidth, this.screenHeight, this.baseUri);
+  UpdateStudentFormState(this.screenWidth, this.screenHeight, this.baseUri);
 
-  //screen measurement properties
-  var screenHeight;
   var screenWidth;
-
+  var screenHeight;
   String baseUri;
 
-  //Form properties
-  final _addStudentFormKey = GlobalKey<FormState>();
+  Map<String, dynamic> stuDetailsToUpdate = {};
+  Future<http.Response> updatedStudentResponse;
 
-  Map<String, dynamic> stuDetailsToAdd = {};
-  Future<http.Response> createStudentResponse;
+  //Update Student Form
+  final _updateStudentFormKey = GlobalKey<FormState>();
 
-  //Create Student
-  Future<http.Response> createStudent(var email, var name) async {
-    var uri = baseUri + "students/addstudent";
+  //Update Student
+  Future<http.Response> updateStudent(Map<String, dynamic> student) async {
+    var uri = baseUri + "students/updatestudent";
 
-    var response = await http.post(
+    var response = await http.put(
       uri,
       body: jsonEncode(
         <String, dynamic>{
-          "email": email,
-          "name": name,
+          "uid": student["uid"],
+          "email": student["email"],
+          "name": student["name"]
         },
       ),
       headers: {
@@ -58,7 +54,7 @@ class AddStudentFormState extends State<AddStudentForm> {
       print(response);
       return response;
     } else {
-      throw Exception('Failed to create student');
+      throw Exception('Failed to update student');
     }
   }
 
@@ -78,7 +74,7 @@ class AddStudentFormState extends State<AddStudentForm> {
               color: Colors.yellow[100],
             ),
             child: Text(
-              'Enter the details of the student below:',
+              'Enter the updated details of the student below:',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 16,
@@ -87,10 +83,46 @@ class AddStudentFormState extends State<AddStudentForm> {
           ),
           Container(
             child: Form(
-                key: _addStudentFormKey,
+                key: _updateStudentFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Container(
+                      width: screenWidth * 0.9,
+                      margin: EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          // alignLabelWithHint: true,
+                          hintText: ' Student User ID',
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40.0),
+                            borderSide:
+                                BorderSide(color: Colors.blue[900], width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40.0),
+                            borderSide:
+                                BorderSide(color: Colors.blue[400], width: 2.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'User ID cannot be empty';
+                          } else {
+                            if (value.isNotEmpty) {
+                              try {
+                                var valNum = int.parse(value);
+                              } catch (e) {
+                                return 'Student ID should be a number';
+                              }
+                            }
+                            setState(() {
+                              stuDetailsToUpdate = {"uid": value};
+                            });
+                          }
+                        },
+                      ),
+                    ),
                     Container(
                       width: screenWidth * 0.9,
                       margin: EdgeInsets.only(top: 10),
@@ -114,7 +146,8 @@ class AddStudentFormState extends State<AddStudentForm> {
                             return 'Student Name cannot be empty';
                           } else {
                             setState(() {
-                              stuDetailsToAdd = {"name": value.toString()};
+                              stuDetailsToUpdate
+                                  .addAll({"name": value.toString()});
                             });
                           }
                           //  else {
@@ -146,14 +179,14 @@ class AddStudentFormState extends State<AddStudentForm> {
                         ),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'Enter an email address';
+                            return 'Enter the student\'s email address';
                           } else {
                             this.setState(() {
-                              stuDetailsToAdd
+                              stuDetailsToUpdate
                                   .addAll({"email": value.toString()});
                             });
 
-                            print(stuDetailsToAdd);
+                            print(stuDetailsToUpdate);
                           }
                           //  else {
                           //   try {
@@ -179,15 +212,13 @@ class AddStudentFormState extends State<AddStudentForm> {
                         elevation: 4.0,
                         focusElevation: 5.0,
                         onPressed: () {
-                          print("Submit button pressed...");
-                          if (_addStudentFormKey.currentState.validate()) {
-                            print(_addStudentFormKey.currentState);
+                          print("Update button pressed...");
+                          if (_updateStudentFormKey.currentState.validate()) {
+                            print(_updateStudentFormKey.currentState);
 
                             setState(() {
-                              createStudentResponse = createStudent(
-                                stuDetailsToAdd["email"],
-                                stuDetailsToAdd["name"],
-                              );
+                              updatedStudentResponse =
+                                  updateStudent(stuDetailsToUpdate);
                             });
                           }
                         },
@@ -199,7 +230,7 @@ class AddStudentFormState extends State<AddStudentForm> {
                           height: screenHeight * 0.1,
                           alignment: Alignment.center,
                           child: Text(
-                            'Create Student',
+                            'Update Student',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,

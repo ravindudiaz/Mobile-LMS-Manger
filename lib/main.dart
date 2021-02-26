@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:StudentPlatformApp/UpdateStudentForm.dart';
 import 'package:StudentPlatformApp/addStudentForm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -86,12 +87,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   Color changeDrawerItemColor(bool selected) {
     return selected ? selectedDraweItemColor : defaultDrawerItemColor;
   }
-
-  //Add Student Form
-  final _addStudentFormKey = GlobalKey<FormState>();
-
-  //Update Student Form
-  final _updateStudentFormKey = GlobalKey<FormState>();
 
 //build function
   @override
@@ -346,250 +341,13 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                         // ),
                       )
                     : (this.addStudentSelected
-                        ? AddStudentForm(screenWidth, screenHeight)
+                        ? AddStudentForm(screenWidth, screenHeight, baseUri)
                         : (this.updateStudentSelected
-                            ? Scaffold(
-                                resizeToAvoidBottomPadding: false,
-                                body: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      alignment: Alignment.center,
-                                      height: screenHeight * 0.1,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        color: Colors.yellow[100],
-                                      ),
-                                      child: Text(
-                                        'Enter the updated details of the student below:',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Form(
-                                          key: _updateStudentFormKey,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Container(
-                                                width: screenWidth * 0.9,
-                                                margin:
-                                                    EdgeInsets.only(top: 10),
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    // alignLabelWithHint: true,
-                                                    hintText:
-                                                        ' Student User ID',
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[900],
-                                                          width: 2.0),
-                                                    ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[400],
-                                                          width: 2.0),
-                                                    ),
-                                                  ),
-                                                  validator: (value) {
-                                                    if (value.isEmpty) {
-                                                      return 'User ID cannot be empty';
-                                                    } else {
-                                                      if (value.isNotEmpty) {
-                                                        try {
-                                                          var valNum =
-                                                              int.parse(value);
-                                                        } catch (e) {
-                                                          return 'Student ID should be a number';
-                                                        }
-                                                      }
-                                                      setState(() {
-                                                        stuDetailsToUpdate = {
-                                                          "uid": value
-                                                        };
-                                                      });
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                              Container(
-                                                width: screenWidth * 0.9,
-                                                margin:
-                                                    EdgeInsets.only(top: 10),
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    // alignLabelWithHint: true,
-                                                    hintText: ' Student Name',
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[900],
-                                                          width: 2.0),
-                                                    ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[400],
-                                                          width: 2.0),
-                                                    ),
-                                                  ),
-                                                  validator: (value) {
-                                                    if (value.isEmpty) {
-                                                      return 'Student Name cannot be empty';
-                                                    } else {
-                                                      setState(() {
-                                                        stuDetailsToUpdate
-                                                            .addAll({
-                                                          "name":
-                                                              value.toString()
-                                                        });
-                                                      });
-                                                    }
-                                                    //  else {
-                                                    //   try {
-                                                    //     var valNum = int.parse(value);
-                                                    //   } catch (Exception) {}
-                                                    // }
-                                                    return null;
-                                                  },
-                                                ),
-                                              ),
-                                              Container(
-                                                width: screenWidth * 0.9,
-                                                margin:
-                                                    EdgeInsets.only(top: 10),
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    // alignLabelWithHint: true,
-                                                    hintText:
-                                                        ' Student Email Address',
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[900],
-                                                          width: 2.0),
-                                                    ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40.0),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.blue[400],
-                                                          width: 2.0),
-                                                    ),
-                                                  ),
-                                                  validator: (value) {
-                                                    if (value.isEmpty) {
-                                                      return 'Enter the student\'s email address';
-                                                    } else {
-                                                      this.setState(() {
-                                                        stuDetailsToUpdate
-                                                            .addAll({
-                                                          "email":
-                                                              value.toString()
-                                                        });
-                                                      });
-
-                                                      print(stuDetailsToUpdate);
-                                                    }
-                                                    //  else {
-                                                    //   try {
-                                                    //     var valNum = int.parse(value);
-                                                    //   } catch (Exception) {}
-                                                    // }R
-                                                    return null;
-                                                  },
-                                                ),
-                                              ),
-                                              Container(
-                                                alignment: Alignment.center,
-                                                width: screenWidth,
-                                                margin: EdgeInsets.only(
-                                                  top: 0.05 * screenHeight,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue[50],
-                                                ),
-                                                child: RaisedButton(
-                                                  color: Colors.blue[800],
-                                                  shape: StadiumBorder(),
-                                                  elevation: 4.0,
-                                                  focusElevation: 5.0,
-                                                  onPressed: () {
-                                                    print(
-                                                        "Update button pressed...");
-                                                    if (_updateStudentFormKey
-                                                        .currentState
-                                                        .validate()) {
-                                                      print(
-                                                          _updateStudentFormKey
-                                                              .currentState);
-
-                                                      setState(() {
-                                                        updatedStudentResponse =
-                                                            updateStudent(
-                                                                stuDetailsToUpdate);
-                                                      });
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.blue[800],
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    40.0)),
-                                                    width: screenWidth * 0.6,
-                                                    height: screenHeight * 0.1,
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                      'Update Student',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              )
+                            ? UpdateStudentForm(
+                                screenWidth, screenHeight, baseUri)
                             : (this.deleteStudentSelected
-                                ? AddStudentForm(screenWidth, screenHeight)
+                                ? AddStudentForm(
+                                    screenWidth, screenHeight, baseUri)
                                 : Scaffold(
                                     body: Container(
                                       height: double.infinity,
@@ -625,41 +383,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                                       ),
                                     ),
                                   )))),
-                // : Scaffold(
-                //     body: Container(
-                //       width: double.infinity,
-                //       child: Column(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Container(
-                //             width: double.infinity,
-                //             child: Container(
-                //               child: Center(
-                //                 child: Text(
-                //                   "Get Students",
-                //                   style: TextStyle(
-                //                       fontSize: 20,
-                //                       color: Colors.blue[100]),
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //           Container(
-                //             width: double.infinity,
-                //             child: Container(
-                //                 child: Padding(
-                //               padding: EdgeInsets.all(30),
-                //               child: Icon(
-                //                 Icons.person_pin,
-                //                 size: 120,
-                //                 color: Colors.blue[100],
-                //               ),
-                //             )),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
               ),
               Scaffold(
                 backgroundColor: Color.fromRGBO(240, 240, 240, 0.7),
@@ -728,32 +451,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
       return response;
     } else {
       throw Exception('Failed to load the students');
-    }
-  }
-
-  //Create Student
-  Future<http.Response> createStudent(var email, var name) async {
-    var uri = baseUri + "students/addstudent";
-
-    var response = await http.post(
-      uri,
-      body: jsonEncode(
-        <String, dynamic>{
-          "email": email,
-          "name": name,
-        },
-      ),
-      headers: {
-        "Content-Type": 'application/json ; charset=UTF-8',
-      },
-    );
-    print("Ok?");
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print(response);
-      return response;
-    } else {
-      throw Exception('Failed to create student');
     }
   }
 
