@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:StudentPlatformApp/UpdateStudentForm.dart';
-import 'package:StudentPlatformApp/addStudentForm.dart';
+import 'package:StudentPlatformApp/DefaultScreen.dart';
+import 'package:StudentPlatformApp/StudentOps/GetStudentView.dart';
+import 'package:StudentPlatformApp/StudentOps/UpdateStudentForm.dart';
+import 'package:StudentPlatformApp/StudentOps/AddStudentForm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import './Domains/Student.dart';
 import 'dart:async';
 
 void main() {
@@ -41,15 +42,6 @@ class StudentPlatformApp extends StatefulWidget {
 class StudentPlatformAppState extends State<StudentPlatformApp> {
   // String baseUri = "http://10.0.2.2:8080/";
   String baseUri = "http://192.168.8.130:8080/";
-
-  //Regarding Students
-  Future<http.Response> allStudentsResponse;
-
-  // Map<String, dynamic> stuDetailsToAdd = {};
-  // Future<http.Response> createStudentResponse;
-
-  Map<String, dynamic> stuDetailsToUpdate = {};
-  Future<http.Response> updatedStudentResponse;
 
   Future<http.Response> deletedStudentResponse;
 
@@ -235,111 +227,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                   ),
                 ),
                 body: this.getStudentSelected
-                    ? Scaffold(
-                        body: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: screenWidth,
-                              padding: EdgeInsets.only(
-                                  top: 0.01 * screenHeight,
-                                  bottom: 0.01 * screenHeight),
-                              height: screenHeight * 0.1,
-                              alignment: Alignment.center,
-                              color: Colors.blue[50],
-                              child: RaisedButton(
-                                shape: StadiumBorder(),
-                                color: Colors.blue[900],
-                                elevation: 5.0,
-                                onPressed: () {
-                                  setState(() {
-                                    this.allStudentsResponse =
-                                        this.getAllStudents();
-                                  });
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'Get All Students',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                  width: screenWidth * 0.4,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: screenHeight * 0.7,
-                              child: FutureBuilder<http.Response>(
-                                future: allStudentsResponse,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    var studentData =
-                                        jsonDecode(snapshot.data.body);
-                                    print(snapshot.data);
-
-                                    return ListView.builder(
-                                      // color: Colors.yellow[100],
-                                      // width: screenWidth * 0.9,
-                                      // shrinkWrap: true,
-                                      itemCount: studentData.length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Card(
-                                          color: Colors.white,
-                                          elevation: 4.0,
-                                          child: ListTile(
-                                            title: Text(
-                                              studentData[index]["name"],
-                                            ),
-                                            subtitle: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Student ID : " +
-                                                    studentData[index]["uid"]
-                                                        .toString()),
-                                                Text("Email : " +
-                                                    studentData[index]
-                                                        ["email"]),
-                                              ],
-                                            ),
-                                            // isThreeLine: true,
-                                            leading: FlutterLogo(
-                                              size: 40.0,
-                                              curve: Curves.easeIn,
-                                              duration:
-                                                  Duration(milliseconds: 500),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text("${snapshot.error}");
-                                  }
-                                  return Container(
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      child: Icon(
-                                        Icons.person_pin,
-                                        color: Colors.blue[100],
-                                        size: 120,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        // ),
-                      )
+                    ? GetStudentView(screenWidth, screenHeight, baseUri)
                     : (this.addStudentSelected
                         ? AddStudentForm(screenWidth, screenHeight, baseUri)
                         : (this.updateStudentSelected
@@ -348,41 +236,7 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
                             : (this.deleteStudentSelected
                                 ? AddStudentForm(
                                     screenWidth, screenHeight, baseUri)
-                                : Scaffold(
-                                    body: Container(
-                                      height: double.infinity,
-                                      color: Colors.blue[50],
-                                      alignment: Alignment.center,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                                top: screenWidth * 0.1),
-                                            width: screenWidth * 0.8,
-                                            height: screenHeight * 0.2,
-                                            child: Text(
-                                              'Welcome Admin!',
-                                              style: TextStyle(
-                                                  color: Colors.blue[900],
-                                                  fontSize: 24),
-                                            ),
-                                            alignment: Alignment.center,
-                                          ),
-                                          Container(
-                                            width: screenWidth * 0.8,
-                                            padding: EdgeInsets.only(
-                                              top: screenHeight * 0.05,
-                                            ),
-                                            child: Icon(
-                                              Icons.admin_panel_settings,
-                                              color: Colors.green,
-                                              size: 150.0,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )))),
+                                : DefaultScreen(screenWidth, screenHeight)))),
               ),
               Scaffold(
                 backgroundColor: Color.fromRGBO(240, 240, 240, 0.7),
@@ -434,52 +288,6 @@ class StudentPlatformAppState extends State<StudentPlatformApp> {
   //http call funtions
 
   //Students
-  //Get all students
-  Future<http.Response> getAllStudents() async {
-    // var uri = "http://192.168.8.130:8080/students/getallstudents";
-    var uri = baseUri + "students/getallstudents";
-
-    var response = await http.get(
-      uri,
-      headers: {
-        "Accept": "application/json",
-      },
-    );
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print(response);
-      return response;
-    } else {
-      throw Exception('Failed to load the students');
-    }
-  }
-
-  //Update Student
-  Future<http.Response> updateStudent(Map<String, dynamic> student) async {
-    var uri = baseUri + "students/updatestudent";
-
-    var response = await http.put(
-      uri,
-      body: jsonEncode(
-        <String, dynamic>{
-          "uid": student["uid"],
-          "email": student["email"],
-          "name": student["name"]
-        },
-      ),
-      headers: {
-        "Content-Type": 'application/json ; charset=UTF-8',
-      },
-    );
-    print("Ok?");
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print(response);
-      return response;
-    } else {
-      throw Exception('Failed to update student');
-    }
-  }
 
   //Teachers
   //Get all teachers
